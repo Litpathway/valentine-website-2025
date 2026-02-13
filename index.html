@@ -164,7 +164,7 @@
 
     /* Written note */
     .note{
-      background: rgba(255,255,255,.92);
+      background: rgba(255,255,255,.98); /* solid so nothing shows through */
       border: 1px solid rgba(201,24,74,.18);
       border-radius: 18px;
       padding: 18px;
@@ -187,7 +187,7 @@
           transparent 1px,
           transparent 28px
         );
-      opacity:.55;
+      opacity:.45;
       mix-blend-mode:multiply;
       z-index: 0;
     }
@@ -255,15 +255,14 @@
       100% { transform: translate3d(var(--floatX), -110vh, 0) rotate(12deg); }
     }
 
-    /* Celebration emojis must NOT cover the note: keep them behind everything */
+    /* Celebration layer exists, but we'll TURN IT OFF during the letter */
     .pop{
       position:fixed;
       inset:0;
       pointer-events:none;
-      z-index:0; /* behind card + note */
+      z-index:0;
       overflow:hidden;
     }
-
     .pop span{
       position:absolute;
       opacity: .9;
@@ -297,10 +296,6 @@
   </div>
 
   <script>
-    // ============================================
-    // 💝 CUSTOMIZE YOUR VALENTINE'S WEBSITE HERE 💝
-    // ============================================
-
     const CONFIG = {
       valentineName: "Ifeoluwa",
       pageTitle: "Ifeoluwa, I choose you. 💝",
@@ -359,18 +354,14 @@
 
       animations: {
         floatDuration: "14s",
-        floatDistance: "55px",
-        bounceSpeed: "0.5s",
-        heartExplosionSize: 1.6
+        floatDistance: "55px"
       },
 
-      // IMPORTANT:
-      // Put your mp3 in the SAME folder as index.html in your GitHub Pages repo.
-      // File name must match exactly: music.mp3
+      // Your exact uploaded file name (GitHub Pages is case-sensitive)
       music: {
         enabled: true,
-        autoplay: false,          // browsers block autoplay with sound; we start on first click
-        musicUrl: "./music.mp3",  // <--- your uploaded file in the repo
+        autoplay: false,
+        musicUrl: "./JVKE_-_her_(mp3.pm).mp3",
         startText: "🎵 Play our song",
         stopText: "🔇 Stop music",
         volume: 0.7
@@ -398,8 +389,11 @@
       document.getElementById("subTitle").textContent = `For ${C.valentineName} 💖`;
       document.getElementById("nameBadge").textContent = `💝 Valentine: ${C.valentineName}`;
 
-      // Floating emojis
+      // Layers
       const floatLayer = document.getElementById("floatLayer");
+      const popLayer = document.getElementById("popLayer");
+
+      // Floating emojis
       const floatEmojis = [...C.floatingEmojis.hearts, ...C.floatingEmojis.bears];
       const floatCount = 22;
 
@@ -420,7 +414,7 @@
         floatLayer.appendChild(el);
       }
 
-      // Music (GitHub Pages): must start from a user gesture
+      // Music (encode URL so parentheses work everywhere)
       const musicBtn = document.getElementById("musicBtn");
       let audio = null;
       let isPlaying = false;
@@ -428,7 +422,8 @@
       function setupMusic() {
         if (!C.music?.enabled) return;
 
-        audio = new Audio(C.music.musicUrl);
+        // encodeURI keeps "./" and encodes () safely
+        audio = new Audio(encodeURI(C.music.musicUrl));
         audio.loop = true;
         audio.preload = "auto";
         audio.volume = C.music.volume ?? 0.6;
@@ -455,14 +450,13 @@
           musicBtn.textContent = C.music.startText;
         };
 
-        // Button toggle
         musicBtn.addEventListener("click", async () => {
           if (!audio) return;
           if (!isPlaying) await startAudio();
           else stopAudio();
         });
 
-        // Safety net: first click anywhere can start music (optional)
+        // Start on first user gesture anywhere (extra safety)
         const unlockOnce = async () => {
           if (isPlaying) return;
           const ok = await startAudio();
@@ -472,10 +466,14 @@
             document.removeEventListener("keydown", unlockOnce);
           }
         };
-
         document.addEventListener("click", unlockOnce);
         document.addEventListener("touchstart", unlockOnce);
         document.addEventListener("keydown", unlockOnce);
+
+        // Helpful: if the file path is wrong, show a clear message in console
+        audio.addEventListener("error", () => {
+          console.warn("Music file not found. Check the file name/path:", C.music.musicUrl);
+        });
       }
 
       setupMusic();
@@ -486,9 +484,7 @@
           await audio.play();
           isPlaying = true;
           musicBtn.textContent = C.music.stopText;
-        } catch (e) {
-          // If it fails, she can press the Play button.
-        }
+        } catch (e) {}
       }
 
       // UI flow
@@ -505,6 +501,10 @@
       }
 
       function renderQuestion1() {
+        // bring emojis back for the interactive parts
+        floatLayer.style.display = "block";
+        popLayer.style.display = "block";
+
         setPanel(`
           <div class="question">${q1.text}</div>
           <div class="row">
@@ -521,12 +521,12 @@
         noBtn.addEventListener("mouseenter", () => { secret.style.display = "block"; });
 
         document.getElementById("q1yes").addEventListener("click", async () => {
-          await forceStartMusic(); // starts music on first tap
+          await forceStartMusic();
           renderQuestion2();
         });
 
         noBtn.addEventListener("click", async () => {
-          await forceStartMusic(); // starts music on first tap
+          await forceStartMusic();
           renderQuestion2();
         });
       }
@@ -534,15 +534,12 @@
       function renderQuestion2() {
         setPanel(`
           <div class="question">${q2.text}</div>
-
           <div class="meterWrap">
             <div class="meterLine">
               <input id="loveRange" type="range" min="0" max="6000" value="120" />
             </div>
-
             <div class="meterText">${q2.startText} <span id="pct">120%</span></div>
             <div class="meterMsg" id="meterMsg"></div>
-
             <div class="row">
               <button id="q2next">${q2.nextBtn}</button>
             </div>
@@ -583,25 +580,12 @@
         document.getElementById("q3no").addEventListener("click", renderCelebration);
       }
 
-      function spawnCelebrationEmojis() {
-        const layer = document.getElementById("popLayer");
-        layer.innerHTML = "";
-
-        const chars = Array.from(C.celebration.emojis || "🎉💖").filter(ch => ch.trim().length);
-        const count = 18;
-
-        for (let i = 0; i < count; i++) {
-          const s = document.createElement("span");
-          s.textContent = pick(chars);
-          s.style.left = rand(5, 95) + "vw";
-          s.style.top = rand(8, 90) + "vh";
-          s.style.fontSize = rand(22, 40) + "px";
-          layer.appendChild(s);
-        }
-      }
-
       function renderCelebration() {
-        spawnCelebrationEmojis();
+        // KEY FIX:
+        // Turn off ALL emoji layers so nothing can cover or show through the letter.
+        floatLayer.style.display = "none";
+        popLayer.style.display = "none";
+        popLayer.innerHTML = "";
 
         setPanel(`
           <div class="note">
@@ -614,7 +598,6 @@
         `);
 
         document.getElementById("restart").addEventListener("click", () => {
-          document.getElementById("popLayer").innerHTML = "";
           renderQuestion1();
         });
       }
