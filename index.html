@@ -36,6 +36,7 @@
       justify-content:center;
       padding:24px;
       position:relative;
+      z-index: 2;
     }
 
     .card{
@@ -70,6 +71,8 @@
       border: 1px solid rgba(255,255,255,.55);
       border-radius: 18px;
       padding: 18px;
+      position: relative;
+      z-index: 2;
     }
 
     .question{
@@ -101,7 +104,6 @@
       box-shadow: 0 10px 25px rgba(255,77,109,.25);
       user-select:none;
     }
-
     button:hover{ background: var(--btnHover); }
     button:active{ transform: scale(.98); }
 
@@ -111,10 +113,7 @@
       box-shadow:none;
       border:1px solid rgba(201,24,74,.18);
     }
-
-    .ghost:hover{
-      background: rgba(255,255,255,.8);
-    }
+    .ghost:hover{ background: rgba(255,255,255,.8); }
 
     .hint{
       text-align:center;
@@ -148,9 +147,7 @@
       padding: 10px 12px;
     }
 
-    input[type="range"]{
-      width:100%;
-    }
+    input[type="range"]{ width:100%; }
 
     .meterText{
       text-align:center;
@@ -165,13 +162,15 @@
       min-height: 20px;
     }
 
+    /* Written note */
     .note{
-      background: rgba(255,255,255,.86);
+      background: rgba(255,255,255,.92);
       border: 1px solid rgba(201,24,74,.18);
       border-radius: 18px;
       padding: 18px;
       box-shadow: 0 14px 30px rgba(0,0,0,.08);
       position:relative;
+      isolation: isolate;
     }
 
     .note:before{
@@ -188,8 +187,9 @@
           transparent 1px,
           transparent 28px
         );
-      opacity:.65;
+      opacity:.55;
       mix-blend-mode:multiply;
+      z-index: 0;
     }
 
     .note h2{
@@ -197,9 +197,10 @@
       margin:0 0 10px 0;
       font-size: 22px;
       text-align:center;
+      z-index: 1;
     }
 
-    /* Letter: EXACTLY 16px */
+    /* Letter must be 16px */
     .note pre{
       position:relative;
       margin:0;
@@ -208,6 +209,7 @@
       color: rgba(201,24,74,.92);
       line-height: 1.55;
       font-size: 16px;
+      z-index: 1;
     }
 
     .topBar{
@@ -242,7 +244,6 @@
     .floatEmoji{
       position:absolute;
       bottom:-40px;
-      font-size: 26px;
       opacity: .9;
       animation: floatUp var(--floatDur) linear infinite;
       filter: drop-shadow(0 8px 12px rgba(0,0,0,.12));
@@ -254,25 +255,22 @@
       100% { transform: translate3d(var(--floatX), -110vh, 0) rotate(12deg); }
     }
 
-    /* Celebration emojis: NO BOUNCE (static) */
+    /* Celebration emojis must NOT cover the note: keep them behind everything */
     .pop{
       position:fixed;
       inset:0;
       pointer-events:none;
-      z-index:3;
+      z-index:0; /* behind card + note */
       overflow:hidden;
     }
 
     .pop span{
       position:absolute;
-      font-size: 30px;
+      opacity: .9;
       filter: drop-shadow(0 10px 14px rgba(0,0,0,.12));
     }
 
-    .fadeIn{
-      animation: fadeIn .25s ease both;
-    }
-
+    .fadeIn{ animation: fadeIn .25s ease both; }
     @keyframes fadeIn{
       from{ opacity:0; transform: translateY(6px); }
       to{ opacity:1; transform: translateY(0); }
@@ -304,51 +302,39 @@
     // ============================================
 
     const CONFIG = {
-      // Your Valentine's name that will appear in the title
-      // Example: "Jade", "Sarah", "Mike"
       valentineName: "Ifeoluwa",
-
-      // The title that appears in the browser tab
-      // You can use emojis! 💝 💖 💗 💓 💞 💕
       pageTitle: "Ifeoluwa, I choose you. 💝",
 
-      // Floating emojis that appear in the background
-      // Find more emojis at: https://emojipedia.org
       floatingEmojis: {
-        hearts: ['💗', '💖', '💝', '💕', '💘', '❤️'],  // Heart emojis
-        bears: ['🧸', '🐻', '🐻‍❄️']                   // Cute bear emojis
+        hearts: ['💗', '💖', '💝', '💕', '💘', '❤️'],
+        bears: ['🧸', '🐻', '🐻‍❄️']
       },
 
-      // Questions and answers
-      // Customize each question and its possible responses
       questions: {
         first: {
-          text: "Before anything… do you know how much you mean to me? 🥺", // First interaction
-          yesBtn: "Tell me 💕",                                            // Text for "Yes" button
-          noBtn: "Not sure 🙈",                                            // Text for "No" button
-          secretAnswer: "You’re my safest place. Always. ❤️"              // Secret hover message
+          text: "Before anything… do you know how much you mean to me? 🥺",
+          yesBtn: "Tell me 💕",
+          noBtn: "Not sure 🙈",
+          secretAnswer: "You’re my safest place. Always. ❤️"
         },
         second: {
-          text: "Okay… how much should I spoil you today? 😌",             // For the love meter
-          startText: "This much!",                                        // Text before the percentage
-          nextBtn: "Next 💖"                                              // Text for the next button
+          text: "Okay… how much should I spoil you today? 😌",
+          startText: "This much!",
+          nextBtn: "Next 💖"
         },
         third: {
-          text: "Will you be my Valentine today and every day after? 🌹",  // The big question!
-          yesBtn: "Yes baby 💝",                                          // Text for "Yes" button
-          noBtn: "Still yes 😏"                                           // Text for "No" button
+          text: "Will you be my Valentine today and every day after? 🌹",
+          yesBtn: "Yes baby 💝",
+          noBtn: "Still yes 😏"
         }
       },
 
-      // Love meter messages
-      // They show up depending on how far they slide the meter
       loveMessages: {
-        extreme: "AYYY! That’s my girl 😭💝 I love you more than words.", // Shows when they go past 5000%
-        high: "You’re my favorite person, forever. 🚀💖",                 // Shows when they go past 1000%
-        normal: "I’ll take it 😌💕 and I’m still not done loving you."    // Shows when they go past 100%
+        extreme: "AYYY! That’s my girl 😭💝 I love you more than words.",
+        high: "You’re my favorite person, forever. 🚀💖",
+        normal: "I’ll take it 😌💕 and I’m still not done loving you."
       },
 
-      // Messages that appear after they say "Yes!"
       celebration: {
         title: "💌 A Note For You, Ife mi 💖",
         message:
@@ -363,38 +349,34 @@
         emojis: "💌🖊️💖✨🥰🤗💋"
       },
 
-      // Color scheme for the website
-      // Use https://colorhunt.co or https://coolors.co to find beautiful color combinations
       colors: {
-        backgroundStart: "#ff9a9e",      // Gradient start (try pastel colors for a soft look)
-        backgroundEnd: "#fad0c4",        // Gradient end (should complement backgroundStart)
-        buttonBackground: "#ff4d6d",     // Button color (should stand out against the background)
-        buttonHover: "#ff758f",          // Button hover color (slightly lighter than buttonBackground)
-        textColor: "#c9184a"             // Text color (make sure it's readable!)
+        backgroundStart: "#ff9a9e",
+        backgroundEnd: "#fad0c4",
+        buttonBackground: "#ff4d6d",
+        buttonHover: "#ff758f",
+        textColor: "#c9184a"
       },
 
-      // Animation settings
-      // Adjust these if you want faster/slower animations
       animations: {
-        floatDuration: "14s",           // How long it takes hearts to float up (10-20s recommended)
-        floatDistance: "55px",          // How far hearts move sideways (30-70px recommended)
-        bounceSpeed: "0.5s",            // (kept for compatibility, but not used)
+        floatDuration: "14s",
+        floatDistance: "55px",
+        bounceSpeed: "0.5s",
         heartExplosionSize: 1.6
       },
 
-      // Background Music (Optional)
-      // Autoplay may be blocked; this page starts music on first click/tap/keydown if blocked.
+      // IMPORTANT:
+      // Put your mp3 in the SAME folder as index.html in your GitHub Pages repo.
+      // File name must match exactly: music.mp3
       music: {
         enabled: true,
-        autoplay: true,
-        musicUrl: "https://res.cloudinary.com/dncywqfpb/video/upload/v1738399057/music_qrhjvy.mp3",
+        autoplay: false,          // browsers block autoplay with sound; we start on first click
+        musicUrl: "./music.mp3",  // <--- your uploaded file in the repo
         startText: "🎵 Play our song",
         stopText: "🔇 Stop music",
-        volume: 0.5
+        volume: 0.7
       }
     };
 
-    // Don't modify anything below this line unless you know what you're doing
     window.VALENTINE_CONFIG = CONFIG;
   </script>
 
@@ -424,7 +406,6 @@
       function rand(min, max) { return Math.random() * (max - min) + min; }
       function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
 
-      // Convert "55px" => 55
       const floatDistanceNum = parseFloat(C.animations.floatDistance) || 50;
 
       for (let i = 0; i < floatCount; i++) {
@@ -439,7 +420,7 @@
         floatLayer.appendChild(el);
       }
 
-      // Music: reliable start (autoplay may be blocked)
+      // Music (GitHub Pages): must start from a user gesture
       const musicBtn = document.getElementById("musicBtn");
       let audio = null;
       let isPlaying = false;
@@ -450,7 +431,7 @@
         audio = new Audio(C.music.musicUrl);
         audio.loop = true;
         audio.preload = "auto";
-        audio.volume = C.music.volume ?? 0.5;
+        audio.volume = C.music.volume ?? 0.6;
 
         musicBtn.style.display = "inline-block";
         musicBtn.textContent = C.music.startText;
@@ -481,29 +462,34 @@
           else stopAudio();
         });
 
-        // Try autoplay (may fail silently)
-        if (C.music.autoplay) {
-          startAudio().then((ok) => {
-            if (!ok) {
-              // Unlock audio on first user interaction anywhere
-              const unlock = async () => {
-                const started = await startAudio();
-                if (started) {
-                  document.removeEventListener("click", unlock);
-                  document.removeEventListener("touchstart", unlock);
-                  document.removeEventListener("keydown", unlock);
-                }
-              };
+        // Safety net: first click anywhere can start music (optional)
+        const unlockOnce = async () => {
+          if (isPlaying) return;
+          const ok = await startAudio();
+          if (ok) {
+            document.removeEventListener("click", unlockOnce);
+            document.removeEventListener("touchstart", unlockOnce);
+            document.removeEventListener("keydown", unlockOnce);
+          }
+        };
 
-              document.addEventListener("click", unlock, { once: false });
-              document.addEventListener("touchstart", unlock, { once: false });
-              document.addEventListener("keydown", unlock, { once: false });
-            }
-          });
-        }
+        document.addEventListener("click", unlockOnce);
+        document.addEventListener("touchstart", unlockOnce);
+        document.addEventListener("keydown", unlockOnce);
       }
 
       setupMusic();
+
+      async function forceStartMusic() {
+        if (!audio || isPlaying) return;
+        try {
+          await audio.play();
+          isPlaying = true;
+          musicBtn.textContent = C.music.stopText;
+        } catch (e) {
+          // If it fails, she can press the Play button.
+        }
+      }
 
       // UI flow
       const panel = document.getElementById("panel");
@@ -534,8 +520,15 @@
 
         noBtn.addEventListener("mouseenter", () => { secret.style.display = "block"; });
 
-        document.getElementById("q1yes").addEventListener("click", renderQuestion2);
-        noBtn.addEventListener("click", renderQuestion2);
+        document.getElementById("q1yes").addEventListener("click", async () => {
+          await forceStartMusic(); // starts music on first tap
+          renderQuestion2();
+        });
+
+        noBtn.addEventListener("click", async () => {
+          await forceStartMusic(); // starts music on first tap
+          renderQuestion2();
+        });
       }
 
       function renderQuestion2() {
@@ -547,7 +540,7 @@
               <input id="loveRange" type="range" min="0" max="6000" value="120" />
             </div>
 
-            <div class="meterText" id="meterText">${q2.startText} <span id="pct">120%</span></div>
+            <div class="meterText">${q2.startText} <span id="pct">120%</span></div>
             <div class="meterMsg" id="meterMsg"></div>
 
             <div class="row">
@@ -602,7 +595,6 @@
           s.textContent = pick(chars);
           s.style.left = rand(5, 95) + "vw";
           s.style.top = rand(8, 90) + "vh";
-          s.style.animationDelay = "0s"; // no animation used anyway
           s.style.fontSize = rand(22, 40) + "px";
           layer.appendChild(s);
         }
@@ -627,7 +619,6 @@
         });
       }
 
-      // Start
       renderQuestion1();
     })();
   </script>
