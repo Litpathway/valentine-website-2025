@@ -1,77 +1,581 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- CUSTOMIZE: Browser tab title -->
-    <title>Will You Be My Valentine? 💝</title>
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@400;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <!-- Styles -->
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Ifeoluwa, I choose you. 💝</title>
+
+  <style>
+    :root{
+      --bg1:#ff9a9e;
+      --bg2:#fad0c4;
+      --btn:#ff4d6d;
+      --btnHover:#ff758f;
+      --text:#c9184a;
+      --card: rgba(255,255,255,.78);
+      --card2: rgba(255,255,255,.55);
+      --shadow: 0 20px 50px rgba(0,0,0,.12);
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,Helvetica,Arial;
+      min-height:100vh;
+      color:var(--text);
+      background: linear-gradient(135deg,var(--bg1),var(--bg2));
+      overflow-x:hidden;
+    }
+
+    .wrap{
+      min-height:100vh;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      padding:24px;
+      position:relative;
+    }
+
+    .card{
+      width:min(760px, 100%);
+      background: var(--card);
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 28px;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,.55);
+      position:relative;
+      z-index:2;
+    }
+
+    .title{
+      margin:0 0 6px 0;
+      font-size: 28px;
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      text-align:center;
+    }
+
+    .sub{
+      margin:0 0 18px 0;
+      text-align:center;
+      color: rgba(201,24,74,.85);
+      font-size: 15px;
+    }
+
+    .panel{
+      background: var(--card2);
+      border: 1px solid rgba(255,255,255,.55);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .question{
+      text-align:center;
+      font-size: 20px;
+      line-height:1.35;
+      margin: 6px 0 14px 0;
+    }
+
+    .row{
+      display:flex;
+      gap: 12px;
+      justify-content:center;
+      flex-wrap:wrap;
+      margin-top: 10px;
+    }
+
+    button{
+      appearance:none;
+      border:none;
+      border-radius: 14px;
+      padding: 12px 16px;
+      background: var(--btn);
+      color:#fff;
+      font-weight: 700;
+      font-size: 15px;
+      cursor:pointer;
+      transition: transform .08s ease, background .15s ease, box-shadow .15s ease;
+      box-shadow: 0 10px 25px rgba(255,77,109,.25);
+      user-select:none;
+    }
+    button:hover{ background: var(--btnHover); }
+    button:active{ transform: scale(.98); }
+
+    .ghost{
+      background: rgba(255,255,255,.65);
+      color: var(--text);
+      box-shadow:none;
+      border:1px solid rgba(201,24,74,.18);
+    }
+    .ghost:hover{
+      background: rgba(255,255,255,.8);
+    }
+
+    .hint{
+      text-align:center;
+      margin-top: 10px;
+      font-size: 13px;
+      color: rgba(201,24,74,.75);
+    }
+
+    .secret{
+      display:none;
+      text-align:center;
+      margin-top: 8px;
+      font-size: 14px;
+      color: rgba(201,24,74,.95);
+      font-weight: 650;
+    }
+
+    .meterWrap{
+      display:flex;
+      flex-direction:column;
+      gap:10px;
+      align-items:center;
+      padding: 6px 0 2px 0;
+    }
+    .meterLine{
+      width: min(520px, 100%);
+      background: rgba(255,255,255,.8);
+      border: 1px solid rgba(201,24,74,.12);
+      border-radius: 999px;
+      padding: 10px 12px;
+    }
+    input[type="range"]{
+      width:100%;
+    }
+    .meterText{
+      text-align:center;
+      font-weight: 700;
+      color: rgba(201,24,74,.95);
+    }
+    .meterMsg{
+      text-align:center;
+      font-size: 14px;
+      color: rgba(201,24,74,.85);
+      min-height: 20px;
+    }
+
+    .note{
+      background: rgba(255,255,255,.86);
+      border: 1px solid rgba(201,24,74,.18);
+      border-radius: 18px;
+      padding: 18px;
+      box-shadow: 0 14px 30px rgba(0,0,0,.08);
+      position:relative;
+    }
+    .note:before{
+      content:"";
+      position:absolute;
+      inset: 0;
+      border-radius: 18px;
+      pointer-events:none;
+      background:
+        linear-gradient(transparent 0 0),
+        repeating-linear-gradient(
+          to bottom,
+          rgba(201,24,74,.07) 0px,
+          rgba(201,24,74,.07) 1px,
+          transparent 1px,
+          transparent 28px
+        );
+      opacity:.65;
+      mix-blend-mode:multiply;
+    }
+    .note h2{
+      position:relative;
+      margin:0 0 10px 0;
+      font-size: 22px;
+      text-align:center;
+    }
+    .note pre{
+      position:relative;
+      margin:0;
+      white-space:pre-wrap;
+      font-family: ui-serif, Georgia, "Times New Roman", Times, serif;
+      color: rgba(201,24,74,.92);
+      line-height: 1.55;
+      font-size: 16px;
+    }
+
+    .topBar{
+      display:flex;
+      gap:10px;
+      justify-content:center;
+      margin-bottom: 14px;
+      flex-wrap:wrap;
+    }
+
+    .badge{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      background: rgba(255,255,255,.7);
+      border:1px solid rgba(201,24,74,.12);
+      padding: 8px 12px;
+      border-radius:999px;
+      font-size:13px;
+      color: rgba(201,24,74,.85);
+    }
+
+    /* Floating emojis */
+    .floatLayer{
+      position:fixed;
+      inset:0;
+      overflow:hidden;
+      z-index:1;
+      pointer-events:none;
+    }
+    .floatEmoji{
+      position:absolute;
+      bottom:-40px;
+      font-size: 26px;
+      opacity: .9;
+      animation: floatUp var(--floatDur) linear infinite;
+      filter: drop-shadow(0 8px 12px rgba(0,0,0,.12));
+      will-change: transform;
+    }
+    @keyframes floatUp{
+      0% { transform: translate3d(0, 0, 0) rotate(0deg); }
+      100% { transform: translate3d(var(--floatX), -110vh, 0) rotate(12deg); }
+    }
+
+    /* Celebration confetti emojis */
+    .pop{
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      z-index:3;
+      overflow:hidden;
+    }
+    .pop span{
+      position:absolute;
+      font-size: 30px;
+      animation: popBounce var(--bounce, .5s) ease-in-out infinite alternate;
+      filter: drop-shadow(0 10px 14px rgba(0,0,0,.12));
+    }
+    @keyframes popBounce{
+      from{ transform: translateY(0); }
+      to{ transform: translateY(-12px); }
+    }
+
+    .fadeIn{
+      animation: fadeIn .25s ease both;
+    }
+    @keyframes fadeIn{
+      from{ opacity:0; transform: translateY(6px); }
+      to{ opacity:1; transform: translateY(0); }
+    }
+  </style>
 </head>
+
 <body>
-    <!-- Floating Background Elements -->
-    <div class="floating-elements">
-        <!-- Hearts and bears will be added here by JavaScript -->
+  <div class="floatLayer" id="floatLayer"></div>
+  <div class="pop" id="popLayer" aria-hidden="true"></div>
+
+  <div class="wrap">
+    <div class="card fadeIn">
+      <h1 class="title" id="mainTitle"></h1>
+      <p class="sub" id="subTitle"></p>
+
+      <div class="topBar">
+        <span class="badge" id="nameBadge"></span>
+        <button id="musicBtn" class="ghost" style="display:none;"></button>
+      </div>
+
+      <div class="panel" id="panel"></div>
     </div>
+  </div>
 
-    <!-- Main Content Container -->
-    <div class="container">
-        <h1 id="valentineTitle"></h1>
-        
-        <!-- Music Player -->
-        <div id="musicControls" class="music-controls">
-            <button id="musicToggle" class="music-btn">🎵 Play Music</button>
-            <audio id="bgMusic" loop>
-                <source id="musicSource" type="audio/mpeg">
-                Your browser does not support the audio element.
-            </audio>
-        </div>
+  <script>
+    // ============================================
+    // 💝 CUSTOMIZE YOUR VALENTINE'S WEBSITE HERE 💝
+    // ============================================
 
-        <!-- First Question -->
-        <div class="question-section" id="question1">
-            <h2 id="question1Text"></h2>
-            <button class="cute-btn" onclick="moveButton(this)" id="yesBtn1"></button>
-            <button class="cute-btn" onclick="moveButton(this)" id="noBtn1"></button>
-            <!-- CUSTOMIZE: Secret answer text -->
-            <div class="secret-answer">
-                <button class="cute-btn special" onclick="showNextQuestion(2)" id="secretAnswerBtn"></button>
+    const CONFIG = {
+      valentineName: "Ifeoluwa",
+      pageTitle: "Ifeoluwa, I choose you. 💝",
+
+      floatingEmojis: {
+        hearts: ['💗', '💖', '💝', '💕', '💘', '❤️'],
+        bears: ['🧸', '🐻', '🐻‍❄️']
+      },
+
+      questions: {
+        first: {
+          text: "Before anything… do you know how much you mean to me? 🥺",
+          yesBtn: "Tell me 💕",
+          noBtn: "Not sure 🙈",
+          secretAnswer: "You’re my safest place. Always. ❤️"
+        },
+        second: {
+          text: "Okay… how much should I spoil you today? 😌",
+          startText: "This much!",
+          nextBtn: "Next 💖"
+        },
+        third: {
+          text: "Will you be my Valentine today and every day after? 🌹",
+          yesBtn: "Yes baby 💝",
+          noBtn: "Still yes 😏"
+        }
+      },
+
+      loveMessages: {
+        extreme: "AYYY! That’s my girl 😭💝 I love you more than words.",
+        high: "You’re my favorite person, forever. 🚀💖",
+        normal: "I’ll take it 😌💕 and I’m still not done loving you."
+      },
+
+      celebration: {
+        title: "💌 A Note For You, Ife mi 💖",
+        message:
+          "My dearest Ife mi,\n\n" +
+          "I wanted to write this like a real note, because you deserve something thoughtful.\n\n" +
+          "You are one of the most thoughtful people I’ve ever met. The way you think deeply, the way you carry yourself with intelligence and self-confidence… it inspires me more than you know.\n\n" +
+          "The day you agreed to be mine was the happiest day of my life. I remember that feeling clearly. It was peace, excitement, gratitude… all at once. And I still feel that way about you.\n\n" +
+          "Thank you for being you. Thank you for choosing me. I’m choosing you again today, and I will keep choosing you.\n\n" +
+          "Happy Valentine’s Day, my love.\n\n" +
+          "With all my heart,\n" +
+          "Yours always ❤️",
+        emojis: "💌🖊️💖✨🥰🤗💋"
+      },
+
+      colors: {
+        backgroundStart: "#ff9a9e",
+        backgroundEnd: "#fad0c4",
+        buttonBackground: "#ff4d6d",
+        buttonHover: "#ff758f",
+        textColor: "#c9184a"
+      },
+
+      animations: {
+        floatDuration: "14s",
+        floatDistance: "55px",
+        bounceSpeed: "0.5s",
+        heartExplosionSize: 1.6
+      },
+
+      music: {
+        enabled: true,
+        autoplay: true,
+        musicUrl: "https://res.cloudinary.com/dncywqfpb/video/upload/v1738399057/music_qrhjvy.mp3",
+        startText: "🎵 Play our song",
+        stopText: "🔇 Stop music",
+        volume: 0.5
+      }
+    };
+
+    // Don't modify anything below this line unless you know what you're doing
+    window.VALENTINE_CONFIG = CONFIG;
+  </script>
+
+  <script>
+    (function () {
+      const C = window.VALENTINE_CONFIG;
+
+      // Apply theme
+      document.documentElement.style.setProperty("--bg1", C.colors.backgroundStart);
+      document.documentElement.style.setProperty("--bg2", C.colors.backgroundEnd);
+      document.documentElement.style.setProperty("--btn", C.colors.buttonBackground);
+      document.documentElement.style.setProperty("--btnHover", C.colors.buttonHover);
+      document.documentElement.style.setProperty("--text", C.colors.textColor);
+      document.documentElement.style.setProperty("--floatDur", C.animations.floatDuration);
+
+      // Title + header
+      document.title = C.pageTitle;
+      document.getElementById("mainTitle").textContent = C.pageTitle;
+      document.getElementById("subTitle").textContent = `For ${C.valentineName} 💖`;
+      document.getElementById("nameBadge").textContent = `💝 Valentine: ${C.valentineName}`;
+
+      // Floating emojis
+      const floatLayer = document.getElementById("floatLayer");
+      const floatEmojis = [...C.floatingEmojis.hearts, ...C.floatingEmojis.bears];
+      const floatCount = 22;
+
+      function rand(min, max) { return Math.random() * (max - min) + min; }
+      function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+      for (let i = 0; i < floatCount; i++) {
+        const el = document.createElement("div");
+        el.className = "floatEmoji";
+        el.textContent = pick(floatEmojis);
+        el.style.left = rand(0, 100) + "vw";
+        el.style.animationDelay = rand(0, 12) + "s";
+        el.style.setProperty("--floatX", rand(-parseFloat(C.animations.floatDistance), parseFloat(C.animations.floatDistance)) + "px");
+        el.style.fontSize = rand(20, 34) + "px";
+        el.style.opacity = rand(0.55, 0.95);
+        floatLayer.appendChild(el);
+      }
+
+      // Music
+      const musicBtn = document.getElementById("musicBtn");
+      let audio = null;
+      let isPlaying = false;
+
+      function setupMusic() {
+        if (!C.music?.enabled) return;
+        audio = new Audio(C.music.musicUrl);
+        audio.loop = true;
+        audio.volume = C.music.volume ?? 0.5;
+
+        musicBtn.style.display = "inline-block";
+        musicBtn.textContent = C.music.startText;
+
+        musicBtn.addEventListener("click", async () => {
+          if (!audio) return;
+          try {
+            if (!isPlaying) {
+              await audio.play();
+              isPlaying = true;
+              musicBtn.textContent = C.music.stopText;
+            } else {
+              audio.pause();
+              isPlaying = false;
+              musicBtn.textContent = C.music.startText;
+            }
+          } catch (e) {
+            // Browser blocked autoplay or play() failed
+            alert("Tap again to start the music ❤️");
+          }
+        });
+
+        // Attempt autoplay if enabled (may be blocked)
+        if (C.music.autoplay) {
+          audio.play().then(() => {
+            isPlaying = true;
+            musicBtn.textContent = C.music.stopText;
+          }).catch(() => {
+            // do nothing; user can press the button
+          });
+        }
+      }
+      setupMusic();
+
+      // UI flow
+      const panel = document.getElementById("panel");
+      const q1 = C.questions.first;
+      const q2 = C.questions.second;
+      const q3 = C.questions.third;
+
+      function setPanel(html) {
+        panel.classList.remove("fadeIn");
+        // force reflow
+        void panel.offsetWidth;
+        panel.classList.add("fadeIn");
+        panel.innerHTML = html;
+      }
+
+      function renderQuestion1() {
+        setPanel(`
+          <div class="question">${q1.text}</div>
+          <div class="row">
+            <button id="q1yes">${q1.yesBtn}</button>
+            <button id="q1no" class="ghost">${q1.noBtn}</button>
+          </div>
+          <div class="hint">Tip: hover the “No” button 🙈</div>
+          <div class="secret" id="secretMsg">${q1.secretAnswer}</div>
+        `);
+
+        const noBtn = document.getElementById("q1no");
+        const secret = document.getElementById("secretMsg");
+        noBtn.addEventListener("mouseenter", () => { secret.style.display = "block"; });
+
+        document.getElementById("q1yes").addEventListener("click", renderQuestion2);
+        noBtn.addEventListener("click", renderQuestion2);
+      }
+
+      function renderQuestion2() {
+        setPanel(`
+          <div class="question">${q2.text}</div>
+
+          <div class="meterWrap">
+            <div class="meterLine">
+              <input id="loveRange" type="range" min="0" max="6000" value="120" />
             </div>
-        </div>
 
-        <!-- Second Question (Love Meter) -->
-        <div class="question-section hidden" id="question2">
-            <h2 id="question2Text"></h2>
-            <!-- Love meter settings: min="0" max="10000" -->
-            <div class="love-meter">
-                <input type="range" min="0" max="10000" value="100" class="slider" id="loveMeter">
-                <p>
-                    <span class="love-value-container"><span id="startText"></span> (<span id="loveValue">100</span>%)</span>
-                    <span id="extraLove" class="hidden"></span>
-                </p>
+            <div class="meterText" id="meterText">${q2.startText} <span id="pct">120%</span></div>
+            <div class="meterMsg" id="meterMsg"></div>
+
+            <div class="row">
+              <button id="q2next">${q2.nextBtn}</button>
             </div>
-            <button class="cute-btn" onclick="showNextQuestion(3)" id="nextBtn"></button>
-        </div>
+          </div>
+        `);
 
-        <!-- Final Question -->
-        <div class="question-section hidden" id="question3">
-            <h2 id="question3Text"></h2>
-            <button class="cute-btn final-yes" onclick="celebrate()" id="yesBtn3"></button>
-            <button class="cute-btn" onclick="moveButton(this)" id="noBtn3"></button>
-        </div>
+        const range = document.getElementById("loveRange");
+        const pct = document.getElementById("pct");
+        const msg = document.getElementById("meterMsg");
 
-        <!-- CUSTOMIZE: Celebration message -->
-        <div class="celebration hidden" id="celebration">
-            <h2 id="celebrationTitle"></h2>
-            <p class="celebration-text" id="celebrationMessage"></p>
-            <p class="celebration-text" id="celebrationEmojis"></p>
-        </div>
-    </div>
+        function update() {
+          const v = Number(range.value);
+          pct.textContent = `${v}%`;
 
-    <!-- Scripts -->
-    <script src="config.js"></script>
-    <script src="theme.js"></script>
-    <script src="script.js"></script>
+          if (v > 5000) msg.textContent = C.loveMessages.extreme;
+          else if (v > 1000) msg.textContent = C.loveMessages.high;
+          else if (v > 100) msg.textContent = C.loveMessages.normal;
+          else msg.textContent = "";
+        }
+
+        range.addEventListener("input", update);
+        update();
+
+        document.getElementById("q2next").addEventListener("click", renderQuestion3);
+      }
+
+      function renderQuestion3() {
+        setPanel(`
+          <div class="question">${q3.text}</div>
+          <div class="row">
+            <button id="q3yes">${q3.yesBtn}</button>
+            <button id="q3no" class="ghost">${q3.noBtn}</button>
+          </div>
+          <div class="hint">There’s only one correct answer 😌</div>
+        `);
+
+        document.getElementById("q3yes").addEventListener("click", renderCelebration);
+        document.getElementById("q3no").addEventListener("click", renderCelebration);
+      }
+
+      function spawnCelebrationEmojis() {
+        const layer = document.getElementById("popLayer");
+        layer.innerHTML = "";
+        const chars = Array.from(C.celebration.emojis || "🎉💖").filter(ch => ch.trim().length);
+
+        const count = 18;
+        for (let i = 0; i < count; i++) {
+          const s = document.createElement("span");
+          s.textContent = pick(chars);
+          s.style.left = rand(5, 95) + "vw";
+          s.style.top = rand(8, 90) + "vh";
+          s.style.setProperty("--bounce", C.animations.bounceSpeed);
+          s.style.animationDelay = rand(0, 0.6) + "s";
+          s.style.fontSize = rand(22, 40) + "px";
+          layer.appendChild(s);
+        }
+      }
+
+      function renderCelebration() {
+        spawnCelebrationEmojis();
+        setPanel(`
+          <div class="note">
+            <h2>${C.celebration.title}</h2>
+            <pre>${C.celebration.message}</pre>
+          </div>
+          <div class="row" style="margin-top:14px;">
+            <button id="restart" class="ghost">Replay 💞</button>
+          </div>
+        `);
+
+        document.getElementById("restart").addEventListener("click", () => {
+          document.getElementById("popLayer").innerHTML = "";
+          renderQuestion1();
+        });
+      }
+
+      // Start
+      renderQuestion1();
+    })();
+  </script>
 </body>
-</html> 
+</html>
